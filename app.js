@@ -7,7 +7,6 @@ const methodOverride = require('method-override');
 // Suppress the deprecation warning
 mongoose.set('strictQuery', true);
 
-// Your mongoose.connect code here
 
 
 // Clear any cached models to prevent OverwriteModelError
