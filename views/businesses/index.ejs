@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Businesses</title>
+</head>
+<body>
+    <h1>All Businesses</h1>
+
+    <!-- Link to Add a New Business -->
+    <div>
+        <a href="/business/new">Add Business</a>
+    </div>
+
+    <!-- Sort Dropdown -->
+    <label for="sort">Sort by:</label>
+    <select id="sort" onchange="sortBusinesses()">
+        <option value="select-option">Select Option..</option>
+        <option value="low-to-high">★ - Low to High</option>
+        <option value="high-to-low">★ - High to Low</option>
+        <option value="a-z">A-Z</option>
+        <option value="z-a">Z-A</option>
+    </select>
+
+    <!-- Search Bar -->
+    <div>
+    <input type="text" id="search" placeholder="Search.." onkeyup="searchBusinesses()">
+    </div>
+
+    <!-- Business List -->
+    <ul id="business-list">
+        <% if (businesses && businesses.length > 0) { %>
+            <% for (let b of businesses) { %>
+                <li>
+                    <a href="/business/<%= b._id %>"><%= b.title %></a> - <%= b.averageRating.toFixed(2) %> &#9733;
+                </li>
+            <% } %>
+        <% } else { %>
+            <li>No businesses found.</li>
+        <% } %>
+    </ul>
+
+    <script>
+        // Sort businesses based on the selected option
+        function sortBusinesses() {
+            const sortOption = document.getElementById('sort').value;
+            const businessList = Array.from(document.querySelectorAll('#business-list > li'));
+            const listContainer = document.getElementById('business-list');
+
+            const sortedBusinesses = businessList.sort((a, b) => {
+                const titleA = a.querySelector('a').textContent.trim();
+                const titleB = b.querySelector('a').textContent.trim();
+                const ratingA = parseFloat(a.textContent.split(' - ')[1]) || 0;
+                const ratingB = parseFloat(b.textContent.split(' - ')[1]) || 0;
+
+                switch (sortOption) {
+                    case 'low-to-high':
+                        return ratingA - ratingB;
+                    case 'high-to-low':
+                        return ratingB - ratingA;
+                    case 'a-z':
+                        return titleA.localeCompare(titleB);
+                    case 'z-a':
+                        return titleB.localeCompare(titleA);
+                    default:
+                        return 0;
+                }
+            });
+
+            // Clear the current list and append sorted businesses
+            listContainer.innerHTML = '';
+            sortedBusinesses.forEach(business => listContainer.appendChild(business));
+        }
+
+        // Filter businesses based on search input
+        function searchBusinesses() {
+            const searchInput = document.getElementById('search').value.toLowerCase();
+            const businessList = document.querySelectorAll('#business-list > li');
+
+            businessList.forEach(business => {
+                const title = business.querySelector('a').textContent.toLowerCase();
+                if (title.includes(searchInput)) {
+                    business.style.display = 'list-item';
+                } else {
+                    business.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

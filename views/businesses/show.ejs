@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Business</title>
+</head>
+<body>
+    <!-- Display business details -->
+    <h1><%= business.title %> - <%= business.averageRating.toFixed(2) %> ★ </h1>
+    <h1><%= business.description %></h1>
+    <h1><%= business.location %></h1>
+
+    <!-- Links for navigation -->
+    <div>
+        <a href="/business/<%= business._id %>/update">Update</a>
+        <a href="/business">Back</a>
+    </div>
+
+    <!-- Delete business form -->
+    <form action="/business/<%= business._id %>?_method=DELETE" method="POST">
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+
+    <!-- Add a review form -->
+    <h3>Add a Review</h3>
+    <form action="/business/<%= business._id %>/reviews" method="POST">
+        <div class="mb-3">
+            <label for="rating" class="form-label">Rating</label>
+            <input type="range" class="form-range" id="rating" name="review[rating]" min="1" max="5" value="3">
+        </div>
+        <div class="mb-3">
+            <label for="review" class="form-label">Review</label>
+            <textarea class="form-control" id="review" name="review[body]" cols="30" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <!-- Display reviews -->
+    <h3>Reviews</h3>
+    <ul>
+        <% for (let review of business.reviews) { %>
+            <li>
+                <strong>Rating:</strong> <%= review.rating %> <br>
+                <strong>Review:</strong> <%= review.body %>
+                <form action="/business/<%= business._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" style="display: inline;">
+                <button type="submit">Delete</button>
+            </form>            
+            </li>
+        <% } %>
+    </ul>
+</body>
+</html>
